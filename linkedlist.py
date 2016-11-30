@@ -117,6 +117,12 @@ class LinkedList(object):
         except AttributeError:
             return None
 
+    def __iter__(self):
+        current = self.head
+        while current is not None:
+            yield current
+            current = current.next
+
 
 
 def test_linked_list():

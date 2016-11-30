@@ -32,25 +32,30 @@ class HashTable(object):
         # TODO: Check if the given key exists in a bucket
         
         for bucket in self.buckets:
-            current = bucket.head
-
-            while current.next is not None:
-                if current.data == key:
+            for node in bucket:
+                if node.data[0] == key:
                     return True
-                current = current.next
-            # for node in bucket:
-            #     if node.data == key:
+
+            # current = bucket.head
+
+            # while current.next is not None:
+            #     if current.data == key:
             #         return True
+            #     current = current.next
+
 
         return False
 
     def get(self, key):
         """Return the value associated with the given key, or raise KeyError"""
         # TODO: Check if the given key exists and return its associated value
-        for bucket in self.buckets:
-            data = bucket.find(lambda _key: _key == key)
-            if data is not None:
-                return data[1]
+        bucketIndex = hash(key) % len(self.buckets)
+        bucket = self.buckets[bucketIndex]
+        data = bucket.find(lambda node: node[0] == key)
+        if data is not None:
+            return data[1]
+
+
             # current = bucket.head
 
             # while current.next is not None:
@@ -58,37 +63,57 @@ class HashTable(object):
             #         return current.data[1]
             #     current = current.next
 
-        raise ValueError
+        raise KeyError
 
     def set(self, key, value):
         """Insert or update the given key with its associated value"""
         # TODO: Insert or update the given key-value entry into a bucket
         hashKey = hash(key) % len(self.buckets)
         bucket = self.buckets[hashKey]
+        if bucket.find(lambda node: node[0] == key):
+            for node in bucket:
+                if node.data[0] == key:
+                    bucket.delete(node.data)    
         bucket.append((key, value))
 
     def delete(self, key):
         """Delete the given key from this hash table, or raise KeyError"""
         # TODO: Find the given key and delete its entry if found
-        for bucket in self.buckets:
-            value = bucket.get(key)
-            # ^ or self.get(key)?
-            bucket.delete((key, value))
-            # current = bucket.head
+        
+        # get the bucket by using the hash
 
-            # while current.next is not None:
-            #     if current.data[0] == key:
-            #         #remove key val pair from hash table
-            #     current = current.next
+        bucketIndex = hash(key) % len(self.buckets)
+        bucket = self.buckets[bucketIndex]
+        for node in bucket:
+            if key == node.data[0]:
+                bucket.delete(node.data)
+                return
 
-        raise ValueError
+
+        # current = bucket.head
+
+        # while current.next is not None:
+        #     if current.data[0] == key:
+        #         #remove key val pair from hash table
+        #     current = current.next
+
+        raise KeyError
 
     def keys(self):
         """Return a list of all keys in this hash table"""
-        # TODO: Collect all keys in each of the buckets
-        pass
+        keys = []
+        for bucket in self.buckets:
+            for node in bucket:
+                keys.append(node.data[0])
+
+        return keys
 
     def values(self):
         """Return a list of all values in this hash table"""
         # TODO: Collect all values in each of the buckets
-        pass
+        values = []
+        for bucket in self.buckets:
+            for node in bucket:
+                values.append(node.data[1])
+
+        return values
