@@ -19,28 +19,69 @@ class HashTable(object):
 
     def length(self):
         """Return the length of this hash table by traversing its buckets"""
-        # TODO: Count number of key-value entries in each of the buckets
-        pass
+        count = 0
 
-    def contains(self):
+        for bucket in self.buckets:
+            # bucket should be a list containing the key value pairs
+            count += bucket.length()
+
+        return count
+
+    def contains(self, key):
         """Return True if this hash table contains the given key, or False"""
         # TODO: Check if the given key exists in a bucket
-        pass
+        
+        for bucket in self.buckets:
+            current = bucket.head
+
+            while current.next is not None:
+                if current.data == key:
+                    return True
+                current = current.next
+            # for node in bucket:
+            #     if node.data == key:
+            #         return True
+
+        return False
 
     def get(self, key):
         """Return the value associated with the given key, or raise KeyError"""
         # TODO: Check if the given key exists and return its associated value
-        pass
+        for bucket in self.buckets:
+            data = bucket.find(lambda _key: _key == key)
+            if data is not None:
+                return data[1]
+            # current = bucket.head
+
+            # while current.next is not None:
+            #     if current.data[0] == key:
+            #         return current.data[1]
+            #     current = current.next
+
+        raise ValueError
 
     def set(self, key, value):
         """Insert or update the given key with its associated value"""
         # TODO: Insert or update the given key-value entry into a bucket
-        pass
+        hashKey = hash(key) % len(self.buckets)
+        bucket = self.buckets[hashKey]
+        bucket.append((key, value))
 
     def delete(self, key):
         """Delete the given key from this hash table, or raise KeyError"""
         # TODO: Find the given key and delete its entry if found
-        pass
+        for bucket in self.buckets:
+            value = bucket.get(key)
+            # ^ or self.get(key)?
+            bucket.delete((key, value))
+            # current = bucket.head
+
+            # while current.next is not None:
+            #     if current.data[0] == key:
+            #         #remove key val pair from hash table
+            #     current = current.next
+
+        raise ValueError
 
     def keys(self):
         """Return a list of all keys in this hash table"""
