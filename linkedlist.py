@@ -22,7 +22,10 @@ class Node(object):
 class LinkedList(object):
 
     def __init__(self, iterable=None):
-        """Initialize this linked list; append the given items, if any"""
+        """Initialize this linked list; append the given items, if any
+
+        Best case running time: Ω(1) if no iterable is passed in
+       Worst case running time: O(n) for length of iterable"""
         self.head = None
         self.tail = None
         if iterable:
